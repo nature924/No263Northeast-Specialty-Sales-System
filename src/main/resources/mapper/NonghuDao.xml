@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.NonghuDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.username as username
+        ,a.password as password
+        ,a.nonghu_uuid_number as nonghuUuidNumber
+        ,a.nonghu_name as nonghuName
+        ,a.nonghu_phone as nonghuPhone
+        ,a.nonghu_id_number as nonghuIdNumber
+        ,a.nonghu_photo as nonghuPhoto
+        ,a.sex_types as sexTypes
+        ,a.nonghu_email as nonghuEmail
+        ,a.new_money as newMoney
+        ,a.jinyong_types as jinyongTypes
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.NonghuView" >
+        SELECT
+        <include refid="Base_Column_List" />
+        <!-- 级联表的字段 -->
+
+        FROM nonghu  a
+
+        <where>
+            <if test="params.ids != null">
+                and a.id in
+                <foreach item="item" index="index" collection="params.ids" open="(" separator="," close=")">
+                #{item}
+                </foreach>
+            </if>
+            <if test=" params.username != '' and params.username != null and params.username != 'null' ">
+                and a.username like CONCAT('%',#{params.username},'%')
+            </if>
+            <if test=" params.password != '' and params.password != null and params.password != 'null' ">
+                and a.password like CONCAT('%',#{params.password},'%')
+            </if>
+            <if test=" params.nonghuUuidNumber != '' and params.nonghuUuidNumber != null and params.nonghuUuidNumber != 'null' ">
+                and a.nonghu_uuid_number like CONCAT('%',#{params.nonghuUuidNumber},'%')
+            </if>
+            <if test=" params.nonghuName != '' and params.nonghuName != null and params.nonghuName != 'null' ">
+                and a.nonghu_name like CONCAT('%',#{params.nonghuName},'%')
+            </if>
+            <if test=" params.nonghuPhone != '' and params.nonghuPhone != null and params.nonghuPhone != 'null' ">
+                and a.nonghu_phone like CONCAT('%',#{params.nonghuPhone},'%')
+            </if>
+            <if test=" params.nonghuIdNumber != '' and params.nonghuIdNumber != null and params.nonghuIdNumber != 'null' ">
+                and a.nonghu_id_number like CONCAT('%',#{params.nonghuIdNumber},'%')
+            </if>
+            <if test="params.sexTypes != null and params.sexTypes != ''">
+                and a.sex_types = #{params.sexTypes}
+            </if>
+            <if test=" params.nonghuEmail != '' and params.nonghuEmail != null and params.nonghuEmail != 'null' ">
+                and a.nonghu_email like CONCAT('%',#{params.nonghuEmail},'%')
+            </if>
+            <if test="params.newMoneyStart != null ">
+                <![CDATA[  and a.new_money >= #{params.newMoneyStart}   ]]>
+            </if>
+            <if test="params.newMoneyEnd != null ">
+                <![CDATA[  and a.new_money <= #{params.newMoneyEnd}   ]]>
+            </if>
+            <if test="params.newMoney != null and params.newMoney != ''">
+                and a.new_money = #{params.newMoney}
+            </if>
+            <if test="params.jinyongTypes != null and params.jinyongTypes != ''">
+                and a.jinyong_types = #{params.jinyongTypes}
+            </if>
+
+        </where>
+        order by a.${params.sort} ${params.order}
+    </select>
+
+</mapper>

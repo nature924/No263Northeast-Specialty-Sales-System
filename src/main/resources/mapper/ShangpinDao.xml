@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.ShangpinDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.nonghu_id as nonghuId
+        ,a.shangpin_name as shangpinName
+        ,a.shangpin_uuid_number as shangpinUuidNumber
+        ,a.shangpin_photo as shangpinPhoto
+        ,a.shangpin_address as shangpinAddress
+        ,a.zan_number as zanNumber
+        ,a.cai_number as caiNumber
+        ,a.shangpin_types as shangpinTypes
+        ,a.shangpin_erji_types as shangpinErjiTypes
+        ,a.bangfu_types as bangfuTypes
+        ,a.shangpin_kucun_number as shangpinKucunNumber
+        ,a.shangpin_price as shangpinPrice
+        ,a.shangpin_old_money as shangpinOldMoney
+        ,a.shangpin_new_money as shangpinNewMoney
+        ,a.shangpin_cangku as shangpinCangku
+        ,a.shangpin_clicknum as shangpinClicknum
+        ,a.shangpin_content as shangpinContent
+        ,a.shangxia_types as shangxiaTypes
+        ,a.shangpin_delete as shangpinDelete
+        ,a.insert_time as insertTime
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.ShangpinView" >
+        SELECT
+        <include refid="Base_Column_List" />
+        <!-- 级联表的字段 -->
+        ,nonghu.nonghu_uuid_number as nonghuUuidNumber
+        ,nonghu.nonghu_name as nonghuName
+        ,nonghu.nonghu_phone as nonghuPhone
+        ,nonghu.nonghu_id_number as nonghuIdNumber
+        ,nonghu.nonghu_photo as nonghuPhoto
+        ,nonghu.nonghu_email as nonghuEmail
+        ,nonghu.new_money as newMoney
+        ,nonghu.jinyong_types as jinyongTypes
+
+        FROM shangpin  a
+        left JOIN nonghu nonghu ON a.nonghu_id = nonghu.id
+
+        <where>
+            <if test="params.ids != null">
+                and a.id in
+                <foreach item="item" index="index" collection="params.ids" open="(" separator="," close=")">
+                #{item}
+                </foreach>
+            </if>
+            <if test="params.nonghuId != null and params.nonghuId != ''">
+                and (
+                    a.nonghu_id = #{params.nonghuId}
+                )
+            </if>
+            <if test=" params.shangpinName != '' and params.shangpinName != null and params.shangpinName != 'null' ">
+                and a.shangpin_name like CONCAT('%',#{params.shangpinName},'%')
+            </if>
+            <if test=" params.shangpinUuidNumber != '' and params.shangpinUuidNumber != null and params.shangpinUuidNumber != 'null' ">
+                and a.shangpin_uuid_number like CONCAT('%',#{params.shangpinUuidNumber},'%')
+            </if>
+            <if test=" params.shangpinAddress != '' and params.shangpinAddress != null and params.shangpinAddress != 'null' ">
+                and a.shangpin_address like CONCAT('%',#{params.shangpinAddress},'%')
+            </if>
+            <if test="params.zanNumberStart != null and params.zanNumberStart != ''">
+                <![CDATA[  and a.zan_number >= #{params.zanNumberStart}   ]]>
+            </if>
+            <if test="params.zanNumberEnd != null and params.zanNumberEnd != ''">
+                <![CDATA[  and a.zan_number <= #{params.zanNumberEnd}   ]]>
+            </if>
+             <if test="params.zanNumber != null and params.zanNumber != ''">
+                and a.zan_number = #{params.zanNumber}
+             </if>
+            <if test="params.caiNumberStart != null and params.caiNumberStart != ''">
+                <![CDATA[  and a.cai_number >= #{params.caiNumberStart}   ]]>
+            </if>
+            <if test="params.caiNumberEnd != null and params.caiNumberEnd != ''">
+                <![CDATA[  and a.cai_number <= #{params.caiNumberEnd}   ]]>
+            </if>
+             <if test="params.caiNumber != null and params.caiNumber != ''">
+                and a.cai_number = #{params.caiNumber}
+             </if>
+            <if test="params.shangpinTypes != null and params.shangpinTypes != ''">
+                and a.shangpin_types = #{params.shangpinTypes}
+            </if>
+            <if test="params.shangpinErjiTypes != null and params.shangpinErjiTypes != ''">
+                and a.shangpin_erji_types = #{params.shangpinErjiTypes}
+            </if>
+            <if test="params.bangfuTypes != null and params.bangfuTypes != ''">
+                and a.bangfu_types = #{params.bangfuTypes}
+            </if>
+            <if test="params.shangpinKucunNumberStart != null and params.shangpinKucunNumberStart != ''">
+                <![CDATA[  and a.shangpin_kucun_number >= #{params.shangpinKucunNumberStart}   ]]>
+            </if>
+            <if test="params.shangpinKucunNumberEnd != null and params.shangpinKucunNumberEnd != ''">
+                <![CDATA[  and a.shangpin_kucun_number <= #{params.shangpinKucunNumberEnd}   ]]>
+            </if>
+             <if test="params.shangpinKucunNumber != null and params.shangpinKucunNumber != ''">
+                and a.shangpin_kucun_number = #{params.shangpinKucunNumber}
+             </if>
+            <if test="params.shangpinPriceStart != null and params.shangpinPriceStart != ''">
+                <![CDATA[  and a.shangpin_price >= #{params.shangpinPriceStart}   ]]>
+            </if>
+            <if test="params.shangpinPriceEnd != null and params.shangpinPriceEnd != ''">
+                <![CDATA[  and a.shangpin_price <= #{params.shangpinPriceEnd}   ]]>
+            </if>
+             <if test="params.shangpinPrice != null and params.shangpinPrice != ''">
+                and a.shangpin_price = #{params.shangpinPrice}
+             </if>
+            <if test="params.shangpinOldMoneyStart != null ">
+                <![CDATA[  and a.shangpin_old_money >= #{params.shangpinOldMoneyStart}   ]]>
+            </if>
+            <if test="params.shangpinOldMoneyEnd != null ">
+                <![CDATA[  and a.shangpin_old_money <= #{params.shangpinOldMoneyEnd}   ]]>
+            </if>
+            <if test="params.shangpinOldMoney != null and params.shangpinOldMoney != ''">
+                and a.shangpin_old_money = #{params.shangpinOldMoney}
+            </if>
+            <if test="params.shangpinNewMoneyStart != null ">
+                <![CDATA[  and a.shangpin_new_money >= #{params.shangpinNewMoneyStart}   ]]>
+            </if>
+            <if test="params.shangpinNewMoneyEnd != null ">
+                <![CDATA[  and a.shangpin_new_money <= #{params.shangpinNewMoneyEnd}   ]]>
+            </if>
+            <if test="params.shangpinNewMoney != null and params.shangpinNewMoney != ''">
+                and a.shangpin_new_money = #{params.shangpinNewMoney}
+            </if>
+            <if test=" params.shangpinCangku != '' and params.shangpinCangku != null and params.shangpinCangku != 'null' ">
+                and a.shangpin_cangku like CONCAT('%',#{params.shangpinCangku},'%')
+            </if>
+            <if test="params.shangpinClicknumStart != null and params.shangpinClicknumStart != ''">
+                <![CDATA[  and a.shangpin_clicknum >= #{params.shangpinClicknumStart}   ]]>
+            </if>
+            <if test="params.shangpinClicknumEnd != null and params.shangpinClicknumEnd != ''">
+                <![CDATA[  and a.shangpin_clicknum <= #{params.shangpinClicknumEnd}   ]]>
+            </if>
+             <if test="params.shangpinClicknum != null and params.shangpinClicknum != ''">
+                and a.shangpin_clicknum = #{params.shangpinClicknum}
+             </if>
+            <if test=" params.shangpinContent != '' and params.shangpinContent != null and params.shangpinContent != 'null' ">
+                and a.shangpin_content like CONCAT('%',#{params.shangpinContent},'%')
+            </if>
+            <if test="params.shangxiaTypes != null and params.shangxiaTypes != ''">
+                and a.shangxia_types = #{params.shangxiaTypes}
+            </if>
+            <if test="params.shangpinDeleteStart != null and params.shangpinDeleteStart != ''">
+                <![CDATA[  and a.shangpin_delete >= #{params.shangpinDeleteStart}   ]]>
+            </if>
+            <if test="params.shangpinDeleteEnd != null and params.shangpinDeleteEnd != ''">
+                <![CDATA[  and a.shangpin_delete <= #{params.shangpinDeleteEnd}   ]]>
+            </if>
+             <if test="params.shangpinDelete != null and params.shangpinDelete != ''">
+                and a.shangpin_delete = #{params.shangpinDelete}
+             </if>
+            <if test=" params.insertTimeStart != '' and params.insertTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.insert_time) >= UNIX_TIMESTAMP(#{params.insertTimeStart}) ]]>
+            </if>
+            <if test=" params.insertTimeEnd != '' and params.insertTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.insert_time) <= UNIX_TIMESTAMP(#{params.insertTimeEnd}) ]]>
+            </if>
+            <if test="params.insertTime != null and params.insertTime != ''">
+                and a.insert_time = #{params.insertTime}
+            </if>
+
+                <!-- 判断农户的id不为空 -->
+            <if test=" params.nonghuIdNotNull != '' and params.nonghuIdNotNull != null and params.nonghuIdNotNull != 'null' ">
+                and a.nonghu_id IS NOT NULL
+            </if>
+            <if test=" params.nonghuUuidNumber != '' and params.nonghuUuidNumber != null and params.nonghuUuidNumber != 'null' ">
+                and nonghu.nonghu_uuid_number like CONCAT('%',#{params.nonghuUuidNumber},'%')
+            </if>
+            <if test=" params.nonghuName != '' and params.nonghuName != null and params.nonghuName != 'null' ">
+                and nonghu.nonghu_name like CONCAT('%',#{params.nonghuName},'%')
+            </if>
+            <if test=" params.nonghuPhone != '' and params.nonghuPhone != null and params.nonghuPhone != 'null' ">
+                and nonghu.nonghu_phone like CONCAT('%',#{params.nonghuPhone},'%')
+            </if>
+            <if test=" params.nonghuIdNumber != '' and params.nonghuIdNumber != null and params.nonghuIdNumber != 'null' ">
+                and nonghu.nonghu_id_number like CONCAT('%',#{params.nonghuIdNumber},'%')
+            </if>
+            <if test=" params.nonghuEmail != '' and params.nonghuEmail != null and params.nonghuEmail != 'null' ">
+                and nonghu.nonghu_email like CONCAT('%',#{params.nonghuEmail},'%')
+            </if>
+            <if test="params.newMoneyStart != null ">
+                <![CDATA[  and nonghu.new_money >= #{params.newMoneyStart}   ]]>
+            </if>
+            <if test="params.newMoneyEnd != null ">
+                <![CDATA[  and nonghu.new_money <= #{params.newMoneyEnd}   ]]>
+            </if>
+            <if test="params.newMoney != null and params.newMoney != ''">
+                and a.new_money = #{params.newMoney}
+            </if>
+            <if test="params.jinyongTypes != null  and params.jinyongTypes != ''">
+                and nonghu.jinyong_types = #{params.jinyongTypes}
+            </if>
+
+        </where>
+        order by a.${params.sort} ${params.order}
+    </select>
+
+</mapper>
